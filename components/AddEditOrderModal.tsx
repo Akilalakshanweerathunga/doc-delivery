@@ -18,6 +18,7 @@ export default function AddEditOrderModal({ order, close, reload }: Props) {
   const [phone2, setPhone2] = useState(order.phone2 || "")
   const [description, setDescription] = useState(order.description || "")
   const [trackingDetails, setTrackingDetails] = useState(order.tracking_details || "")
+  const [orderDate, setOrderDate] = useState(order.date || "")
 
   const [products, setProducts] = useState<string[]>([])
   const [selectedProducts, setSelectedProducts] = useState<string[]>(order.products || [])
@@ -50,6 +51,7 @@ export default function AddEditOrderModal({ order, close, reload }: Props) {
       tracking_details: trackingDetails,
       couriers: '1', // auto set
       products: selectedProducts,
+      date: orderDate,
     }
 
     if (order.id) {
@@ -74,6 +76,7 @@ export default function AddEditOrderModal({ order, close, reload }: Props) {
         {/* Inputs */}
         <div className="space-y-2">
           <Input label="Order ID" value={order_id} setValue={setOrder_id} />
+          <InputDate label="Order Date" value={orderDate} setValue={setOrderDate} />
           <Input label="Name" value={name} setValue={setName} />
           <Input label="Address" value={address} setValue={setAddress} />
           <Input label="Phone" value={phone} setValue={setPhone} />
@@ -102,7 +105,7 @@ export default function AddEditOrderModal({ order, close, reload }: Props) {
           {filteredProducts.length > 0 ? (
             filteredProducts.map((p, i) => (
               <label
-                key={`${p}-${i}`} // unique key
+                key={`${p}-${i}`} 
                 className={`flex items-center space-x-2 p-2  hover:bg-gray-50 cursor-pointer ${
                   selectedProducts.includes(p) ? "bg-blue-50 border-blue-300" : ""
                 }`}
@@ -164,6 +167,34 @@ function Input({
         value={value}
         onChange={e => setValue(e.target.value)}
         placeholder={`Enter ${label.toLowerCase()}`}
+        className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+      />
+    </div>
+  )
+}
+
+// Accessible Date Input component
+function InputDate({
+  label,
+  value,
+  setValue,
+}: {
+  label: string
+  value: string
+  setValue: (v: string) => void
+}) {
+  const id = label.toLowerCase().replace(/\s+/g, "-") + "-" + Math.random().toString(36).substr(2, 5)
+
+  return (
+    <div>
+      <label htmlFor={id} className="block mb-1 font-semibold text-sm">
+        {label}
+      </label>
+      <input
+        id={id}
+        type="date"
+        value={value}
+        onChange={e => setValue(e.target.value)}
         className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
       />
     </div>
